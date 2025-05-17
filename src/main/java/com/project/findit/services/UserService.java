@@ -14,4 +14,5 @@ public interface UserService {
     public Optional<UserModel> getUserDetails(UUID id);
     public UserModel updateUserDatails(UUID id, UserModel userModel);
     public void deleteUser(UUID id);
+    Optional<UserModel> findByEmail(String email);
 }

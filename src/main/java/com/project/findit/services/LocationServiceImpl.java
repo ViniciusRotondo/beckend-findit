@@ -1,7 +1,10 @@
 package com.project.findit.services;
 
 import com.project.findit.models.LocationModel;
+import com.project.findit.repositories.CityRepository;
+import com.project.findit.repositories.CountryRepository;
 import com.project.findit.repositories.LocationRepository;
+import com.project.findit.repositories.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +17,32 @@ public class LocationServiceImpl implements LocationService{
 
     @Autowired
     public LocationRepository locationRepository;
+    @Autowired
+    private CityRepository cityRepository;
 
+    @Autowired
+    private StateRepository stateRepository;
+
+    @Autowired
+    private CountryRepository countryRepository;
 
     @Override
     public LocationModel createLocation(LocationModel locationModel) {
+        if (locationModel.getCidades() != null) {
+            locationModel.setCidades(cityRepository.findById(locationModel.getCidades().getId())
+                    .orElseThrow(() -> new RuntimeException("Cidade não encontrada!")));
+        }
+
+        if (locationModel.getEstados() != null) {
+            locationModel.setEstados(stateRepository.findById(locationModel.getEstados().getSigla())
+                    .orElseThrow(() -> new RuntimeException("Estado não encontrado!")));
+        }
+
+        if (locationModel.getPaises() != null) {
+            locationModel.setPaises(countryRepository.findById(locationModel.getPaises().getSigla())
+                    .orElseThrow(() -> new RuntimeException("País não encontrado!")));
+        }
+
         return locationRepository.save(locationModel);
     }
 

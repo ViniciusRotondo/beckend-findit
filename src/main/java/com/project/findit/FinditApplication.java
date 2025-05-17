@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FinditApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FinditApplication.class, args);
+		SpringApplication.run(FinditApplication.class, args);	
 	}
 
 }
