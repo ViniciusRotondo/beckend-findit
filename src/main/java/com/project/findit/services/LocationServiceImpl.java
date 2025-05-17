@@ -1,5 +1,6 @@
 package com.project.findit.services;
 
+import com.project.findit.dtos.LocationRecordDto;
 import com.project.findit.models.LocationModel;
 import com.project.findit.repositories.CityRepository;
 import com.project.findit.repositories.CountryRepository;
@@ -27,21 +28,25 @@ public class LocationServiceImpl implements LocationService{
     private CountryRepository countryRepository;
 
     @Override
-    public LocationModel createLocation(LocationModel locationModel) {
-        if (locationModel.getCidades() != null) {
-            locationModel.setCidades(cityRepository.findById(locationModel.getCidades().getId())
-                    .orElseThrow(() -> new RuntimeException("Cidade não encontrada!")));
-        }
+    public LocationModel createLocation(LocationRecordDto recordDto) {
+        var cidade = cityRepository.findById(recordDto.cidade_id())
+                .orElseThrow(() -> new RuntimeException("Cidade não encontrada!"));
 
-        if (locationModel.getEstados() != null) {
-            locationModel.setEstados(stateRepository.findById(locationModel.getEstados().getSigla())
-                    .orElseThrow(() -> new RuntimeException("Estado não encontrado!")));
-        }
+        var estado = stateRepository.findById(recordDto.estado_id())
+                .orElseThrow(() -> new RuntimeException("Estado não encontrado!"));
 
-        if (locationModel.getPaises() != null) {
-            locationModel.setPaises(countryRepository.findById(locationModel.getPaises().getSigla())
-                    .orElseThrow(() -> new RuntimeException("País não encontrado!")));
-        }
+        var pais = countryRepository.findById(recordDto.pais_id())
+                .orElseThrow(() -> new RuntimeException("País não encontrado!"));
+
+        LocationModel locationModel = new LocationModel();
+        locationModel.setNome(recordDto.nome());
+        locationModel.setEndereco(recordDto.endereco());
+        locationModel.setCapacidade_de_pessoas(recordDto.capacidade_de_pessoas());
+        locationModel.setTelefone(recordDto.telefone());
+        locationModel.setUrl_mapa(recordDto.url_mapa());
+        locationModel.setCidades(cidade);
+        locationModel.setEstados(estado);
+        locationModel.setPaises(pais);
 
         return locationRepository.save(locationModel);
     }

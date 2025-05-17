@@ -1,5 +1,6 @@
 package com.project.findit.controllers;
 
+import com.project.findit.dtos.EventRecordDto;
 import com.project.findit.models.EventModel;
 import com.project.findit.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,9 @@ public class EventController {
     EventService eventService;
 
     @PostMapping("/event")
-    public EventModel addEventDetails(@RequestBody EventModel eventModel){
-        return eventService.createEvent(eventModel);
+    public ResponseEntity<EventModel> addEventDetails(@RequestBody EventRecordDto eventDto){
+        EventModel createdEvent = eventService.createEvent(eventDto);
+        return ResponseEntity.ok(createdEvent);
     }
 
     @GetMapping("/event")

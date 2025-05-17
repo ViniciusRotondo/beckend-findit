@@ -1,5 +1,6 @@
 package com.project.findit.services;
 
+import com.project.findit.dtos.LocationRecordDto;
 import com.project.findit.models.CategoryModel;
 import com.project.findit.models.LocationModel;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 @Service
 public interface LocationService {
-    public LocationModel createLocation(LocationModel locationModel);
+    public LocationModel createLocation(LocationRecordDto locationRecordDto);
     public List<LocationModel> getAllLocations();
     public Optional<LocationModel> getLocationDetails(UUID id);
     public LocationModel updateLocationDatails(UUID id, LocationModel locationModel);

@@ -1,8 +1,10 @@
 package com.project.findit.controllers;
 
+import com.project.findit.dtos.LocationRecordDto;
 import com.project.findit.models.LocationModel;
 import com.project.findit.services.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +17,9 @@ public class LocationController {
     LocationService locationService;
 
     @PostMapping("/location")
-    public LocationModel addLocationDetails(@RequestBody LocationModel locationModel){
-        return locationService.createLocation(locationModel);
+    public ResponseEntity<LocationModel> addLocationDetails(@RequestBody LocationRecordDto recordDto){
+        LocationModel locationModel = locationService.createLocation(recordDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(locationModel);
     }
 
     @GetMapping("/location")

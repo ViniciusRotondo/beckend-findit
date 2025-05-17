@@ -1,7 +1,11 @@
 package com.project.findit.services;
 
+import com.project.findit.dtos.EventRecordDto;
 import com.project.findit.models.EventModel;
+import com.project.findit.repositories.CategoryRepository;
 import com.project.findit.repositories.EventRepository;
+import com.project.findit.repositories.LocationRepository;
+import com.project.findit.repositories.OrganizerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +19,34 @@ public class EventServiceImpl implements EventService{
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private OrganizerRepository organizerRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
 
     @Override
-    public EventModel createEvent(EventModel eventModel) {
+    public EventModel createEvent(EventRecordDto eventDto) {
+        EventModel eventModel = new EventModel();
+        eventModel.setNome_do_evento(eventDto.nome_do_evento());
+        eventModel.setDescricao(eventDto.descricao());
+        eventModel.setData_hora(eventDto.data_hora());
+        eventModel.setUrl_imagem(eventDto.url_imagem());
+        eventModel.setPreco(eventDto.preco());
+        eventModel.setDuracao(eventDto.duracao());
+        eventModel.setIndicativo_idade(eventDto.indicativo_idade());
+        eventModel.setTelefone(eventDto.telefone());
+        eventModel.setStatus(eventDto.status());
+
+        // Relacionamentos:
+        eventModel.setOrganizador(organizerRepository.findById(eventDto.organizador_id()).orElse(null));
+        eventModel.setLocal(locationRepository.findById(eventDto.local_id()).orElse(null));
+        eventModel.setCategoria(categoryRepository.findById(eventDto.categoria_id()).orElse(null));
+
         return eventRepository.save(eventModel);
     }
 
