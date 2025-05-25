@@ -52,4 +52,9 @@ public class OrganizerServiceImpl implements OrganizerService {
     public void deleteOrganizer(UUID id) {
         organizerRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<OrganizerModel> findByEmail(String email) {
+        return organizerRepository.findByEmail(email);
+    }
 }

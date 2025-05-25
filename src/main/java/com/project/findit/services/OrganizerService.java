@@ -2,6 +2,7 @@ package com.project.findit.services;
 
 import com.project.findit.models.CategoryModel;
 import com.project.findit.models.OrganizerModel;
+import com.project.findit.models.UserModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface OrganizerService {
     public Optional<OrganizerModel> getOrganizerDetails(UUID id);
     public OrganizerModel updateOrganizerDatails(UUID id, OrganizerModel organizerModel);
     public void deleteOrganizer(UUID id);
+    Optional<OrganizerModel> findByEmail(String email);
 }

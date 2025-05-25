@@ -2,7 +2,9 @@ package com.project.findit.controllers;
 
 import com.project.findit.dtos.UserLoginDto;
 import com.project.findit.models.UserModel;
+import com.project.findit.models.OrganizerModel;
 import com.project.findit.services.UserService;
+import com.project.findit.services.OrganizerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,25 +19,37 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private OrganizerService organizerService;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDto loginDto) {
-        // 1) busca usuário pelo e-mail
+        // 1) tenta buscar usuário
         Optional<UserModel> optionalUser = userService.findByEmail(loginDto.email());
 
         if (optionalUser.isPresent()) {
             UserModel user = optionalUser.get();
-            // 2) valida a senha
             if (user.getSenha().equals(loginDto.senha())) {
-                // 3) retorna id e nome em um DTO de resposta
-                return ResponseEntity.ok(new UserResponse(user.getId(), user.getNome()));
+                return ResponseEntity.ok(new AuthResponse(user.getId(), user.getNome(), "USUARIO"));
             } else {
                 return ResponseEntity.status(401).body("Senha inválida");
             }
-        } else {
-            return ResponseEntity.status(404).body("Usuário não encontrado");
         }
+
+        // 2) tenta buscar organizador
+        Optional<OrganizerModel> optionalOrganizer = organizerService.findByEmail(loginDto.email());
+
+        if (optionalOrganizer.isPresent()) {
+            OrganizerModel organizer = optionalOrganizer.get();
+            if (organizer.getSenha().equals(loginDto.senha())) {
+                return ResponseEntity.ok(new AuthResponse(organizer.getIdOrganizador(), organizer.getNome(), "ORGANIZADOR"));
+            } else {
+                return ResponseEntity.status(401).body("Senha inválida");
+            }
+        }
+
+        return ResponseEntity.status(404).body("Usuário ou organizador não encontrado");
     }
 
-    // DTO de resposta embutido
-    private record UserResponse(UUID id, String nome) {}
+    private record AuthResponse(UUID id, String nome, String tipo) {}
 }

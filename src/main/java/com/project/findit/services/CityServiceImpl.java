@@ -34,4 +34,6 @@ public class CityServiceImpl implements CityService{
     public void deleteCities(UUID id) {
         cityRepository.deleteById(id);
     }
+
+
 }
