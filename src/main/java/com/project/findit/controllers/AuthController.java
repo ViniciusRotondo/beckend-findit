@@ -30,7 +30,7 @@ public class AuthController {
         if (optionalUser.isPresent()) {
             UserModel user = optionalUser.get();
             if (user.getSenha().equals(loginDto.senha())) {
-                return ResponseEntity.ok(new AuthResponse(user.getId(), user.getNome(), "USUARIO"));
+                return ResponseEntity.ok(new AuthResponse(user.getId(), user.getNome(), "USUARIO", null));
             } else {
                 return ResponseEntity.status(401).body("Senha inválida");
             }
@@ -42,7 +42,7 @@ public class AuthController {
         if (optionalOrganizer.isPresent()) {
             OrganizerModel organizer = optionalOrganizer.get();
             if (organizer.getSenha().equals(loginDto.senha())) {
-                return ResponseEntity.ok(new AuthResponse(organizer.getIdOrganizador(), organizer.getNome(), "ORGANIZADOR"));
+                return ResponseEntity.ok(new AuthResponse(organizer.getIdOrganizador(), organizer.getNome(),"ORGANIZADOR", organizer.getCpf()));
             } else {
                 return ResponseEntity.status(401).body("Senha inválida");
             }
@@ -51,5 +51,5 @@ public class AuthController {
         return ResponseEntity.status(404).body("Usuário ou organizador não encontrado");
     }
 
-    private record AuthResponse(UUID id, String nome, String tipo) {}
+    private record AuthResponse(UUID id, String nome, String tipo, String cpf) {}
 }
