@@ -3,6 +3,7 @@ package com.project.findit.services;
 import com.project.findit.models.OrganizerModel;
 import com.project.findit.repositories.OrganizerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,12 @@ public class OrganizerServiceImpl implements OrganizerService {
     @Autowired
     private OrganizerRepository organizerRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public OrganizerModel createOrganizer(OrganizerModel organizerModel) {
+        organizerModel.setSenha(passwordEncoder.encode(organizerModel.getSenha()));
         return organizerRepository.save(organizerModel);
     }
 
