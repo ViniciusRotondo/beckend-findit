@@ -1,5 +1,6 @@
 package com.project.findit.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class UserModel extends PeopleModel implements Serializable {
     private String telefone;
 
     @Column
-    private Date data_nascimento;
+    private String data_nascimento;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)

@@ -3,6 +3,7 @@ package com.project.findit.services;
 import com.project.findit.models.UserModel;
 import com.project.findit.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserModel createUser(UserModel userModel) {
+        userModel.setSenha(passwordEncoder.encode(userModel.getSenha()));
         return userRepository.save(userModel);
     }
 
@@ -54,5 +59,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserModel> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public boolean changePassword(UUID id, String oldPassword, String newPassword) {
+        Optional<UserModel> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
+            UserModel user = userOpt.get();
+
+            // Verifica a senha antiga usando PasswordEncoder.matches
+            if (passwordEncoder.matches(oldPassword, user.getSenha())) {
+                user.setSenha(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
     }
 }

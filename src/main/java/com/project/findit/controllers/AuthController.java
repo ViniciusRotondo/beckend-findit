@@ -7,6 +7,7 @@ import com.project.findit.services.UserService;
 import com.project.findit.services.OrganizerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -22,6 +23,9 @@ public class AuthController {
     @Autowired
     private OrganizerService organizerService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDto loginDto) {
         // 1) tenta buscar usuário
@@ -29,7 +33,7 @@ public class AuthController {
 
         if (optionalUser.isPresent()) {
             UserModel user = optionalUser.get();
-            if (user.getSenha().equals(loginDto.senha())) {
+            if (passwordEncoder.matches(loginDto.senha(), user.getSenha())) {
                 return ResponseEntity.ok(new AuthResponse(user.getId(), user.getNome(), "USUARIO", null));
             } else {
                 return ResponseEntity.status(401).body("Senha inválida");
@@ -41,7 +45,7 @@ public class AuthController {
 
         if (optionalOrganizer.isPresent()) {
             OrganizerModel organizer = optionalOrganizer.get();
-            if (organizer.getSenha().equals(loginDto.senha())) {
+            if (passwordEncoder.matches(loginDto.senha(), organizer.getSenha())) {
                 return ResponseEntity.ok(new AuthResponse(organizer.getIdOrganizador(), organizer.getNome(),"ORGANIZADOR", organizer.getCpf()));
             } else {
                 return ResponseEntity.status(401).body("Senha inválida");

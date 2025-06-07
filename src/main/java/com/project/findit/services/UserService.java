@@ -15,4 +15,5 @@ public interface UserService {
     public UserModel updateUserDatails(UUID id, UserModel userModel);
     public void deleteUser(UUID id);
     Optional<UserModel> findByEmail(String email);
+    public boolean changePassword(UUID id, String oldPassword, String newPassword);
 }
